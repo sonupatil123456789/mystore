@@ -40,23 +40,8 @@ exports.loginUser = async (req, res, next) => {
 // register user function
 exports.registerUser = async (req, res, next) => {
   try {
-    let { fullName, email, number, password, images, birthdate, address } =
-      req.body;
-
-    const file = req.file;
-
-    if (file == null || file == undefined) {
-      console.log("File not uploaded");
-      images = "";
-    } else {
-      console.log(file);
-      var result = await uploadToCloudinary(file.path, file.filename);
-
-      if (result.message == "Success") {
-        console.log(result.url);
-        images = result.url;
-      }
-    }
+    let { fullName, email, password } = req.body;
+    console.log({ fullName, email, password });
 
     const userId = uuid.v4();
     const token = jwt.sign(userId, process.env.JWT_secret_key);
@@ -70,21 +55,99 @@ exports.registerUser = async (req, res, next) => {
         message: `User already exhisted with this emailid`,
       });
     }
-    const userresponse = new authModel({
+    user = new authModel({
       userId: userId,
       fullName,
       email,
-      number,
       password: hash_password,
-      images,
-      birthdate,
-      address,
       token: token,
     });
     await userresponse.save();
     res.status(200).cookie("token", token, { httpOnly: true }).json({
       success: true,
-      message: `user created successfully`,
+      message: `User registered successfully`,
+      user,
+    });
+  } catch (ex) {
+    console.log(ex);
+    res.status(400).json({
+      success: false,
+      message: `Some error occured`,
+      ex,
+    });
+  }
+};
+
+// update user information function
+exports.updateUser = async (req, res, next) => {
+  console.log(" req.params.userId :>> ", req.params.userId);
+  try {
+    let userresponse = await authModel.findOneAndUpdate(
+      { userId: req.params.userId },
+      req.body,
+      {
+        new: true,
+        useFindAndModify: true,
+        runValidators: false,
+      }
+    );
+    if (!userresponse) {
+      return res.status(400).json({
+        success: false,
+        message: `Some error occured no such user found `,
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: `User information successfully updated`,
+      userresponse,
+    });
+  } catch (ex) {
+    console.log(ex);
+    res.status(400).json({
+      success: false,
+      message: `Some error occured`,
+      ex,
+    });
+  }
+};
+
+// update user avatar image function
+exports.updateUserAvatar = async (req, res, next) => {
+  try {
+    var images;
+    const file = req.file;
+    console.log(file);
+    if (file == null || file == undefined) {
+      console.log("File not uploaded");
+      images = "";
+    } else {
+      console.log(file);
+      var result = await uploadToCloudinary(file.path, file.filename);
+
+      if (result.message == "Success") {
+        console.log(result.url);
+        images = result.url;
+      }
+    }
+    let userresponse = await authModel.findOneAndUpdate(
+      { userId: req.params.userId },
+      { images: images },
+      {
+        new: true,
+        useFindAndModify: true,
+        runValidators: false,
+      }
+    );
+    if (!userresponse) {
+      return res.status(400).json({
+        success: false,
+        message: `Some error occured no such user found `,
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: `User profile avatar successfully updated`,
       userresponse,
     });
   } catch (ex) {
@@ -103,7 +166,7 @@ exports.myData = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: `My profile data`,
-      user: req.user,
+      userresponse: req.user,
     });
   } catch (ex) {
     console.log(ex);

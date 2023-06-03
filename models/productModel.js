@@ -20,7 +20,7 @@ const productScheema = mongoose.Schema({
   },
   discountPercentage: {
     type: Number,
-    default: 0,
+    default: 0.0,
   },
   productImages: [
   ],

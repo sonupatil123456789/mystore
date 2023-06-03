@@ -9,6 +9,8 @@ exports.addToCart = async (req, res, next) => {
    
     if (!foundCart) {
       const newCart = await cartModel({user:userId});
+
+      ////
       newCart.user = userId
       newCart.items.push(
         {
@@ -25,8 +27,22 @@ exports.addToCart = async (req, res, next) => {
         newCart,
       });
     }
+
+    // update if product already exhist in cart
+     const updatedProduct = await cartModel.findOneAndUpdate(
+      { user: userId, 'items.product' :product },
+      {
+        $pull: {
+          items: {
+            product: product,
+          },
+        },
+      },
+      { new: true }
+    );
+
     // if cart already exhist
-    const updatedCart = await cartModel.findOneAndUpdate(
+    newCart = await cartModel.findOneAndUpdate(
       { user: userId },
       {
         $push: {
@@ -43,7 +59,7 @@ exports.addToCart = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       message: `New product added to created (U)`,
-      updatedCart,
+      newCart,
     });
   } catch (ex) {
     console.log(ex);
@@ -58,7 +74,7 @@ exports.addToCart = async (req, res, next) => {
 exports.removeFromCart = async (req, res, next) => {
   try {
     const { userId, cartId} = req.body;
-    const updatedCart = await cartModel.findOneAndUpdate(
+    const removeCart = await cartModel.findOneAndUpdate(
       { user: userId },
       {
         $pull: {
@@ -72,7 +88,7 @@ exports.removeFromCart = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       message: `Product removed from cart (R)`,
-      updatedCart,
+      removeCart,
     });
 
   } catch (ex) {
@@ -90,13 +106,14 @@ exports.removeFromCart = async (req, res, next) => {
 exports.fetchUserCart = async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const userCartList = await cartModel.findOne({user:userId})
+    const userCartList = await cartModel.findOne({user:userId}).populate("items.product");
     if (!userCartList) {
       return res.status(400).json({
-        success: true,
+        success: false,
         message: `User cart is empty`,
       });
     }
+    console.log(userCartList);
     res.status(200).json({
       success: true,
       message: `User cart list`,

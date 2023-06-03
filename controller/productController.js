@@ -38,20 +38,15 @@ exports.fetchAllProducts = async (req,res,next) => {
     }
 }
 
-exports.fetchAllProductsByCategory = async (req,res,next) => {
+exports.fetchSingleProducts = async (req,res,next) => {
+    
+    
     try {
-        const{categoryId}= req.params
-        const productsByCategory = await productModel.find({category:categoryId}).populate("category");
-        if (!productsByCategory) {
-            res.status(400).json({
-                success: false,
-                message: `No such products with this category found`,
-            });
-        }
+        const products = await productModel.findOneById({_id:req.params.productId})
         res.status(200).json({
             success: true,
-            message: `List of all category products`,
-            productsByCategory,
+            message: `List of all products`,
+            products,
         });
     } catch (ex) {
         console.log(ex)
@@ -63,9 +58,13 @@ exports.fetchAllProductsByCategory = async (req,res,next) => {
     }
 }
 
+
+
+
+
 exports.updateProductInfo = async (req,res,next) => {
     try {
-        const { id, title, discription, color, size ,price, rating, stock, brand, category, thumbnail,productImages} =req.body;
+        const { id, title, discription, color, size ,price, rating, stock, brand, category, thumbnail,productImages,discountPercentage} =req.body;
 
         const updatedproduct = await productModel.findOneAndUpdate(
             { _id: id },
@@ -75,6 +74,7 @@ exports.updateProductInfo = async (req,res,next) => {
                 rating,
                 stock,
                 brand,
+                discountPercentage,
                 category,
                 thumbnail,
               $push: {

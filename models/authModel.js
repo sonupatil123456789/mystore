@@ -19,7 +19,7 @@ const userAuthScheema = new mongoose.Schema({
     },
     number: {
         type: String,
-        required: true,
+        // required: true,
     },
     password : {
         type: String,
@@ -32,11 +32,12 @@ const userAuthScheema = new mongoose.Schema({
     },
     birthdate: {
         type: String,
-        required: true
+        default:"29/03/2000"
+        // required: true
     },
     address: {
         type: String,
-        required: true
+        // required: true
     },
     token: {
         type: String,
