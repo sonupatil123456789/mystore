@@ -1,14 +1,14 @@
-const categoryModel = require("../models/catogaryModel");
+const brandsModel = require("../models/brandModel");
 
 
 // creatin a category 
-exports.creatCategory = async (req,res,next) => {
+exports.creatBrands = async (req,res,next) => {
     try {
-        const category = await categoryModel.create(req.body);
+        const brands = await brandsModel.create(req.body);
         res.status(200).json({
             success: true,
-            message: `New category added`,
-            category,
+            message: `New brands added`,
+            brands,
         });
         
     } catch (ex) {
@@ -23,13 +23,13 @@ exports.creatCategory = async (req,res,next) => {
 
 
 // featching all category 
-exports.fetchAllCategorys = async (req,res,next) => {
+exports.fetchAllBrands = async (req,res,next) => {
     try {
-        const categorys = await categoryModel.find()
+        const brands = await brandsModel.find()
         res.status(200).json({
             success: true,
             message: `List of all category`,
-            categorys,
+            brands,
         });
     } catch (ex) {
         console.log(ex)
@@ -43,20 +43,20 @@ exports.fetchAllCategorys = async (req,res,next) => {
 
 
 //  featching single categorys
-exports.fetchSingleCategorys = async (req,res,next) => {
+exports.fetchSingleBrand = async (req,res,next) => {
     const {id} = req.params;
     try {
-        const categorys = await categoryModel.findOne({_id:id})
-        if (!categorys) {
+        const brands = await brandsModel.findOne({_id:id})
+        if (!brands) {
             res.status(400).json({
                 success: false,
-                message: `No such category`,
+                message: `No such brands`,
             });
         }
         res.status(200).json({
             success: true,
-            message: `One category found`,
-            categorys,
+            message: `One brands found`,
+            brands,
         });
     } catch (ex) {
         console.log(ex)
@@ -67,4 +67,3 @@ exports.fetchSingleCategorys = async (req,res,next) => {
         });
     }
 }
-

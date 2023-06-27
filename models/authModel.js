@@ -19,7 +19,7 @@ const userAuthScheema = new mongoose.Schema({
     },
     number: {
         type: String,
-        // required: true,
+        default: ""
     },
     password : {
         type: String,
@@ -37,7 +37,7 @@ const userAuthScheema = new mongoose.Schema({
     },
     address: {
         type: String,
-        // required: true
+        default:""
     },
     token: {
         type: String,

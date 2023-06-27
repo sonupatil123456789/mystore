@@ -6,31 +6,32 @@ exports.addToCart = async (req, res, next) => {
     const { userId, product, quantity, color, size } = req.body;
     const foundCart = await cartModel.findOne({ user: userId });
     // cart does not exhist
-   
+
+    const userCart= [];
+
     if (!foundCart) {
-      const newCart = await cartModel({user:userId});
+       userCart = await cartModel({ user: userId });
 
       ////
-      newCart.user = userId
-      newCart.items.push(
-        {
+      userCart.user = userId;
+      userCart.items.push({
         product: product,
         quantity: quantity,
         color: color,
         size: size,
       });
-      await newCart.save();
+      await userCart.save();
 
       return res.status(200).json({
         success: true,
         message: `New product added to cart (F)`,
-        newCart,
+        userCart,
       });
     }
 
     // update if product already exhist in cart
-     const updatedProduct = await cartModel.findOneAndUpdate(
-      { user: userId, 'items.product' :product },
+    var updatedProduct = await cartModel.findOneAndUpdate(
+      { user: userId, "items.product": product },
       {
         $pull: {
           items: {
@@ -42,7 +43,7 @@ exports.addToCart = async (req, res, next) => {
     );
 
     // if cart already exhist
-    newCart = await cartModel.findOneAndUpdate(
+    userCart = await cartModel.findOneAndUpdate(
       { user: userId },
       {
         $push: {
@@ -59,7 +60,7 @@ exports.addToCart = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       message: `New product added to created (U)`,
-      newCart,
+      userCart,
     });
   } catch (ex) {
     console.log(ex);
@@ -73,8 +74,8 @@ exports.addToCart = async (req, res, next) => {
 
 exports.removeFromCart = async (req, res, next) => {
   try {
-    const { userId, cartId} = req.body;
-    const removeCart = await cartModel.findOneAndUpdate(
+    const { userId, cartId } = req.body;
+    const userCart = await cartModel.findOneAndUpdate(
       { user: userId },
       {
         $pull: {
@@ -88,9 +89,8 @@ exports.removeFromCart = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       message: `Product removed from cart (R)`,
-      removeCart,
+      userCart,
     });
-
   } catch (ex) {
     console.log(ex);
     res.status(400).json({
@@ -101,23 +101,24 @@ exports.removeFromCart = async (req, res, next) => {
   }
 };
 
-
 // fetch all products from user cart
 exports.fetchUserCart = async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const userCartList = await cartModel.findOne({user:userId}).populate("items.product");
-    if (!userCartList) {
+    const userCart = await cartModel
+      .findOne({ user: userId })
+      .populate("items.product");
+    if (!userCart) {
       return res.status(400).json({
         success: false,
         message: `User cart is empty`,
       });
     }
-    console.log(userCartList);
+    console.log(userCart);
     res.status(200).json({
       success: true,
       message: `User cart list`,
-      userCartList : userCartList.items,
+      userCart: userCart.items,
     });
   } catch (ex) {
     console.log(ex);

@@ -8,7 +8,9 @@ const uploadToCloudinary = require("../utils/cloudinaryUpload");
 exports.loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+    console.log('object :>> ', email, password);
     const user = await authModel.findOne({ email: email });
+    console.log('user :>> ', user);
     if (!user) {
       return res
         .status(400)
@@ -62,7 +64,7 @@ exports.registerUser = async (req, res, next) => {
       password: hash_password,
       token: token,
     });
-    await userresponse.save();
+    await user.save();
     res.status(200).cookie("token", token, { httpOnly: true }).json({
       success: true,
       message: `User registered successfully`,

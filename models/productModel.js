@@ -30,18 +30,24 @@ const productScheema = mongoose.Schema({
   },
   category: {
     type: mongoose.Schema.Types.ObjectId,
-    // type: schema.type.objectId,
     ref: "Category",
     required: true,
   },
   brand: {
-    type: String,
+    // type: String,
+    // required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Brand",
     required: true,
   },
   stock: {
     type: Number,
     required: [true, "Please enter product stock"],
     maxLength: [4, " Stock cannot exceed 4 char "],
+  },
+  likes: {
+    type: Number,
+    default: 0,
   },
   color: [],
   size:[],

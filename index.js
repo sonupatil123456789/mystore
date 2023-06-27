@@ -49,10 +49,14 @@ const auth = require("./routes/authRoute");
 app.use("/api/v1/auth", auth)
 const categorys = require("./routes/categoryRoute");
 app.use("/api/v1/categorys", categorys)
+const brand = require("./routes/brandRoutes");
+app.use("/api/v1/brands", brand)
 const products = require("./routes/productRoute");
 app.use("/api/v1/products", products)
 const cart = require("./routes/cartRoute");
 app.use("/api/v1/cart", cart)
+const order = require("./routes/orderRoutes");
+app.use("/api/v1/order", order)
 
 
 app.listen(process.env.port , ()=> {

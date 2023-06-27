@@ -1,7 +1,3 @@
-// CartRoutes.get("/:user", CartController.getCartForUser);
-// CartRoutes.post("/", CartController.addToCart);
-// CartRoutes.delete("/", CartController.removeFromCart);
-
 const express = require("express")
 const router = express.Router()
 const{addToCart,removeFromCart,fetchUserCart} = require("../controller/cartController")
