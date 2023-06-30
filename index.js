@@ -29,7 +29,7 @@ app.use(cookieParser())
 
 // connecting to the database 
 mongoose.set('strictQuery', false);
-mongoose.connect(process.env.DB_URL, { useUnifiedTopology: true, useNewUrlParser: true });
+mongoose.connect(process.env.DBURL, { useUnifiedTopology: true, useNewUrlParser: true });
 const connection = mongoose.connection;
 connection.once("open", function() {
   console.log("MongoDB database connection established successfully");

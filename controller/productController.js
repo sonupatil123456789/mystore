@@ -21,7 +21,7 @@ exports.creatProduct = async (req, res, next) => {
 
 exports.fetchAllProducts = async (req, res, next) => {
   try {
-    const products = await productModel.find();
+    const products = await productModel.find().populate("category").populate("brand");
     res.status(200).json({
       success: true,
       message: `List of all products`,
@@ -41,7 +41,7 @@ exports.fetchSingleProducts = async (req, res, next) => {
   try {
     const products = await productModel.findOneById({
       _id: req.params.productId,
-    });
+    }).populate("category").populate("brand");
     res.status(200).json({
       success: true,
       message: `List of all products`,

@@ -105,6 +105,7 @@ exports.removeFromCart = async (req, res, next) => {
 exports.fetchUserCart = async (req, res, next) => {
   try {
     const { userId } = req.params;
+    console.log(`=============================${userId}`)
     const userCart = await cartModel
       .findOne({ user: userId })
       .populate("items.product");

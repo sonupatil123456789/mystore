@@ -8,14 +8,14 @@ exports.sortAssendingDesending = async (req, res, next) => {
   );
   let sortproduct;
   if (req.params.assendinddessending == "asc") {
-    sortproduct = await productModel.find().sort({ title: 1 });
+    sortproduct = await productModel.find().sort({ title: 1 }).populate("category").populate("brand");
     res.status(200).json({
       success: true,
       message: `List of all ascending products`,
       sortproduct,
     });
   } else {
-    sortproduct = await productModel.find().sort({ title: -1 });
+    sortproduct = await productModel.find().sort({ title: -1 }).populate("category").populate("brand");
     res.status(200).json({
       success: true,
       message: `List of all decending products`,
@@ -33,14 +33,14 @@ exports.sortHtlLth = async (req, res, next) => {
   );
   let sortproduct;
   if (req.params.sortHtlLth == "htl") {
-    sortproduct = await productModel.find().sort({ price: -1 });
+    sortproduct = await productModel.find().sort({ price: -1 }).populate("category").populate("brand");
     res.status(200).json({
       success: true,
       message: `highest to lowest`,
       sortproduct,
     });
   } else {
-    sortproduct = await productModel.find().sort({ price: 1 });
+    sortproduct = await productModel.find().sort({ price: 1 }).populate("category").populate("brand");
     res.status(200).json({
       success: true,
       message: `lowest to highest `,

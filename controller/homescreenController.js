@@ -2,7 +2,7 @@ const productModel = require("../models/productModel");
 
 // crowsel product top five
 exports.topCrowselFiveProducts = async (req, res, next) => {
-  const products = await productModel.find().limit(3);
+  const products = await productModel.find().populate("category").populate("brand").limit(3);
   res.status(200).json({
     success: true,
     message: `List of top 5 products `,
@@ -28,12 +28,12 @@ exports.fetchAllProductsBySearch = async (req, res, next) => {
           { title: { $regex: input, $options: "i" } },
           { discription: { $regex: input, $options: "i" } },
         ],
-      });
+      }).populate("category").populate("brand");
     } else {
       console.log("it is a int");
       products = await productModel.find({
         $or: [{ price: { $regex: intvalue, $options: "i" } }],
-      });
+      }).populate("category").populate("brand");
     }
     console.log(products);
     res.status(200).json({
@@ -57,7 +57,7 @@ exports.fetchAllProductsByCategory = async (req, res, next) => {
     const { categoryId } = req.params;
     const products = await productModel
       .find({ category: categoryId })
-      .populate("category");
+      .populate("category").populate("brand");;
     // const productsByCategoryLimit = await productModel.find({ category: categoryId }).populate("category").limit(limit);
     if (!products) {
       res.status(400).json({
@@ -86,7 +86,7 @@ exports.fetchAllProductsByBrand = async (req, res, next) => {
     const { brandId } = req.params;
     const products = await productModel
       .find({ brand: brandId })
-      .populate("brand");
+      .populate("category").populate("brand");
     // const productsByCategoryLimit = await productModel.find({ category: categoryId }).populate("category").limit(limit);
     if (!products) {
       res.status(400).json({
@@ -111,7 +111,7 @@ exports.fetchAllProductsByBrand = async (req, res, next) => {
 
 // top  product with higest ratings rating
 exports.productsWithHigestRating = async (req, res, next) => {
-  const products = await productModel.find({ rating: { $gte: 4 } });
+  const products = await productModel.find({ rating: { $gte: 4 } }).populate("category").populate("brand");;
   res.status(200).json({
     success: true,
     message: `List of top products with highest rating products`,
@@ -121,7 +121,7 @@ exports.productsWithHigestRating = async (req, res, next) => {
 
 // higest liked products
 exports.topLikedProducts = async (req, res, next) => {
-  const products = await productModel.find().sort({ __v: -1 });
+  const products = await productModel.find().sort({ __v: -1 }).populate("category").populate("brand");;
   res.status(200).json({
     success: true,
     message: `List of all products`,

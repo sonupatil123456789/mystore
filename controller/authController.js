@@ -8,9 +8,9 @@ const uploadToCloudinary = require("../utils/cloudinaryUpload");
 exports.loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    console.log('object :>> ', email, password);
+    console.log("object :>> ", email, password);
     const user = await authModel.findOne({ email: email });
-    console.log('user :>> ', user);
+    console.log("user :>> ", user);
     if (!user) {
       return res
         .status(400)
@@ -130,28 +130,26 @@ exports.updateUserAvatar = async (req, res, next) => {
       if (result.message == "Success") {
         console.log(result.url);
         images = result.url;
+
+        let userresponse = await authModel.findOneAndUpdate(
+          { _id: req.params.userId },
+          { images: images },
+          {
+            new: true,
+            useFindAndModify: true,
+            runValidators: false,
+          }
+        );
+
+        res.status(200).json({
+          success: true,
+          message: `User profile avatar successfully updated`,
+          userresponse,
+        });
       }
     }
-    let userresponse = await authModel.findOneAndUpdate(
-      { userId: req.params.userId },
-      { images: images },
-      {
-        new: true,
-        useFindAndModify: true,
-        runValidators: false,
-      }
-    );
-    if (!userresponse) {
-      return res.status(400).json({
-        success: false,
-        message: `Some error occured no such user found `,
-      });
-    }
-    res.status(200).json({
-      success: true,
-      message: `User profile avatar successfully updated`,
-      userresponse,
-    });
+
+
   } catch (ex) {
     console.log(ex);
     res.status(400).json({

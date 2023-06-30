@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 const orderSchema = mongoose.Schema({
   user: {   type: Map , required: true },
   status: { type: String, default:"Order-Placed"},
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
   items: {
     type: [
       {
