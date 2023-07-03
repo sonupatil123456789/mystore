@@ -16,9 +16,9 @@ dotenv.config({ path: "./config.env" })
 
 // Configuration 
 cloudinary.config({
-  cloud_name: "shreyaspatil",
-  api_key: "926929596843919",
-  api_secret: "UoO1DWzvy-djf_x1xISCVz85WSo"
+  cloud_name: process.env.cloud_name,
+  api_key: process.env.api_key,
+  api_secret: process.env.api_secret
 });
 
 app.use(cores());
